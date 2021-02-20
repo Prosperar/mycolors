@@ -22,5 +22,10 @@ yarn run lint
 quasar build
 ```
 
+### Generate Icons from 1024 png
+
+npm install -g @quasar/icongenie
+icongenie generate -i /Users/emersondias/quasar/mycolors/icon/icon-1024x1024.
+
 ### Customize the configuration
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
