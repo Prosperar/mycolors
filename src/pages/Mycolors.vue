@@ -1,14 +1,5 @@
 <template>
   <q-page>
-    <q-circular-progress
-      indeterminate
-      v-show='this.vSpinner'
-      size="45px"
-      :thickness="1"
-      color="indigo-1"
-      track-color="indigo"
-      class="q-ma-md"
-    />
     <q-toggle label='Color picker' v-model='vColorPicker'/>
     <q-color
       v-show='vColorPicker'
@@ -28,7 +19,6 @@
               use-input
               new-value-mode='add-unique'
               @new-value='createValue'
-              @keydown.tab='isnewListname ? null : getList'
               @keydown.enter='isnewListname ? null : getList'
               :options='filterOptions'
               :value = 'listname'
@@ -68,7 +58,7 @@
           name='hex'
           label='Hex Code'
           :value='hex'
-          @change='getNameColor'
+          @keydown.enter='getNameColor'
         >
           <template #prepend>
             <q-avatar
@@ -90,9 +80,10 @@
         <q-input
           v-model='desc'
           name='desc'
+          ref='desc'
           label='Description'
           clearable
-          @keyup.enter='handleAdd'
+          @keydown.enter='handleAdd'
         >
           <template #prepend>
             <q-avatar
@@ -203,7 +194,6 @@ export default {
       model: null,
       allLists: [],
       filterOptions: [],
-      vSpinner: false,
       vColorPicker: false,
       lCards: false,
       separator: 'horizontal',
@@ -214,13 +204,7 @@ export default {
       rgb: 'rgb(255, 100, 100)',
       rgba: 'rgba(255, 40, 40, 0.5)',
       isColor: patterns.testPattern.anyColor,
-      rows: [
-        {
-          listname: '',
-          hex: '',
-          description: ''
-        }
-      ],
+      rows: [],
       columns: [
         {
           name: 'hex',
@@ -279,7 +263,6 @@ export default {
         type: 'positive',
         message: "Searching color's name suggestion..."
       })
-      this.vSpinner = true
       const colorHex = this.hex.replace('#', '')
       if (colorHex.length === 6) {
         fetch(`https://api.color.pizza/v1/${colorHex}`)
@@ -292,8 +275,8 @@ export default {
           .catch((error) => {
             alert('Ops : ' + error)
           })
-        this.vSpinner = false
       }
+      this.$refs.desc.focus()
     },
     exportTable () {
       // naive encoding to csv format
@@ -407,14 +390,9 @@ export default {
           this.isnewListname = true
         }
         done(val, 'toggle')
-        this.rows = [
-          {
-            listname: '',
-            hex: '',
-            description: ''
-          }
-        ]
+        this.rows = []
       }
+      this.$refs.hex.focus()
     },
     filterFn (val, update) {
       update(() => {
