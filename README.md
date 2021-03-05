@@ -2,6 +2,9 @@
 
 Personal Color Management System
 
+This version don't use pizza API name color and search it
+in the sqlite local database.
+
 ## Install the dependencies
 ```bash
 yarn
